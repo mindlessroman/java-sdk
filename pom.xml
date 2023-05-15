@@ -315,6 +315,7 @@
     <module>sdk-autogen</module>
     <module>sdk</module>
     <module>sdk-actors</module>
+    <module>sdk-workflows</module>
     <module>sdk-springboot</module>
     <module>examples</module>
   </modules>
