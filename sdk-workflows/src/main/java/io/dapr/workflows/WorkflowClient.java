@@ -21,5 +21,11 @@ public class WorkflowClient implements AutoCloseable {
   /**
    * Instantiates a Durable Task client to communicate with the Dapr sidecar.
    */
-  public WorkflowClient() { };
+  public WorkflowClient() {
+  };
+
+  @Override
+  public void close() throws Exception {
+    System.out.println("toot");
+  }
 }

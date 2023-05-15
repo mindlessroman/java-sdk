@@ -13,9 +13,19 @@ limitations under the License.
 
 package io.dapr.workflows;
 
+
+
 /**
- * Context object used by workflow implementations to perform actions such as scheduling activities, 
- * durable timers, waiting for external events, and for getting basic information about the current 
+ * Context object used by workflow implementations to perform actions such as scheduling activities,
+ * durable timers, waiting for external events, and for getting basic information about the current
  * workflow instance.
  */
-public class WorkflowContext { }
+public interface WorkflowContext {
+
+    String getName();
+    String getInstanceId();
+
+
+  /**TODO: LATER public abstract Task<T> WaitForExternalEventAsync<T>
+   ^ what's java's approach */
+ }
