@@ -14,7 +14,6 @@ limitations under the License.
 package io.dapr.examples.workflows;
 
 import com.microsoft.durabletask.*;
-import io.dapr.client.DaprApiProtocol;
 import io.dapr.config.Properties;
 import io.dapr.utils.Version;
 import io.grpc.ManagedChannel;
@@ -28,8 +27,23 @@ import java.util.StringTokenizer;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+/**
+ * Service for Workflow runtime.
+ * 1. Build and install jars:
+ * mvn clean install
+ * 2. cd to [repo-root]/examples
+ * 3. Run the server:
+ * dapr run --app-id demoworkflowservice --dapr-grpc-port 4001
+ * java -jar target/dapr-java-sdk-examples-exec.jar io.dapr.examples.workflows.DemoWorkflowService
+ */
 public class DurableDemo {
 
+  /**
+   * The main method of this app.
+   *
+   * @param args The port the app will listen on.
+   * @throws Exception An Exception.
+   */
   public static void main(String[] args) throws IOException, InterruptedException, TimeoutException {
     // The TaskHubServer listens over gRPC for new orchestration and activity execution requests
     final DurableTaskGrpcWorker worker = createWorker();
@@ -72,16 +86,12 @@ public class DurableDemo {
    * @return GRPC managed channel or null.
    */
   private static ManagedChannel buildManagedChannel() {
-    if (Properties.API_PROTOCOL.get() != DaprApiProtocol.GRPC) {
-      return null;
-    }
-
     int port = Properties.GRPC_PORT.get();
     if (port <= 0) {
       throw new IllegalStateException("Invalid port.");
     }
 
-    return ManagedChannelBuilder.forAddress(Properties.SIDECAR_IP.get(), port)
+    return ManagedChannelBuilder.forAddress("172.17.250.113", port)
         .usePlaintext()
         .userAgent(Version.getSdkVersion())
         .build();
@@ -94,7 +104,9 @@ public class DurableDemo {
     // Orchestrations can be defined inline as anonymous classes or as concrete classes
     builder.addOrchestration(new TaskOrchestrationFactory() {
       @Override
-      public String getName() { return "FanOutFanIn_WordCount"; }
+      public String getName() {
+        return "FanOutFanIn_WordCount";
+      }
 
       @Override
       public TaskOrchestration create() {
@@ -121,7 +133,9 @@ public class DurableDemo {
     // Activities can be defined inline as anonymous classes or as concrete classes
     builder.addActivity(new TaskActivityFactory() {
       @Override
-      public String getName() { return "CountWords"; }
+      public String getName() {
+        return "CountWords";
+      }
 
       @Override
       public TaskActivity create() {
