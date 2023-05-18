@@ -11,7 +11,20 @@
 limitations under the License.
 */
 
-package io.dapr.workflows;
+package io.dapr.workflows.runtime;
 
+import io.dapr.workflows.runtime.WorkflowContext;
 
-public class WorkflowTest { }
+/**
+ * Common interface for workflow implementations.
+ */
+@FunctionalInterface
+public interface Workflow {
+  /**
+   * Executes the workflow logic.
+   *
+   * @param ctx provides access to methods for scheduling durable tasks and getting information about the current
+   *            workflow instance.
+   */
+  void run(WorkflowContext ctx);
+}
