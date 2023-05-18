@@ -15,39 +15,37 @@ package io.dapr.workflows.runtime;
 
 
 import com.microsoft.durabletask.DurableTaskGrpcWorkerBuilder;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.lang.reflect.Constructor;
 
-import static org.mockito.Mockito.mock;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class WorkflowRuntimeTest {
 
   private static Constructor<WorkflowRuntime> constructor;
-  private WorkflowRuntime runtime;
+  private DurableTaskGrpcWorkerBuilder mockWorkerBuilder;
 
-  @BeforeClass
-  public static void beforeAll() throws Exception {
-    constructor = WorkflowRuntime.class.getDeclaredConstructor(DurableTaskGrpcWorkerBuilder.class);
-    constructor.setAccessible(true);
-  }
-  @Before
-  public void setUp() throws Exception {
-    //    DurableTaskGrpcWorkerBuilder mockWorkerBuilder =
-    //        mock(DurableTaskGrpcWorkerBuilder.class);
-    //
-    //    this.runtime = constructor.newInstance(mockWorkerBuilder);
+  public static class TestWorkflow implements Workflow{
+
+    public TestWorkflow(){}
+
+    @Override
+    public void run(WorkflowContext ctx) {
+
+    }
   }
 
-  //  @Test
-  //  public void getInstance() {
-  //    Assert.assertEquals(this.runtime, WorkflowRuntime.getInstance());
-  //  }
-  //  @Test
-  //  public void registerWorkflowClass() {
-  //    this.runtime.registerWorkflow(null);
-  //  }
+  @Test
+  public void registerWorkflowClass() {
+    assertDoesNotThrow(() -> WorkflowRuntime.getInstance().registerWorkflow(TestWorkflow.class));
+  }
+
+  @Test
+  public void startAndClose() {
+    assertDoesNotThrow(() -> {
+      WorkflowRuntime.getInstance().start();
+      WorkflowRuntime.getInstance().close();
+    });
+  }
 }
