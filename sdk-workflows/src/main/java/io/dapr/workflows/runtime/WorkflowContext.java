@@ -11,15 +11,21 @@
 limitations under the License.
 */
 
-package io.dapr.workflows;
+package io.dapr.workflows.runtime;
+
+import com.microsoft.durabletask.Task;
+import java.time.Duration;
 
 /**
- * Holds a client for Dapr sidecar communication. WorkflowClient should be reused.
+ * Context object used by workflow implementations to perform actions such as scheduling activities,
+ * durable timers, waiting for external events, and for getting basic information about the current
+ * workflow instance.
  */
-public class WorkflowClient implements AutoCloseable {
+public interface WorkflowContext {
 
-  /**
-   * Instantiates a Durable Task client to communicate with the Dapr sidecar.
-   */
-  public WorkflowClient() { };
+  String getName();
+
+  String getInstanceId();
+
+  Task waitForExternalEventAsync(String eventName, Duration timeout);
 }
