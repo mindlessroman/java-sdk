@@ -27,11 +27,11 @@ import static org.mockito.Mockito.*;
 
 public class OrchestratorWrapperTest {
     public static class TestWorkflow extends Workflow{
-    @Override
-    public void run(WorkflowContext ctx) {
-      ctx.getInstanceId();
+      @Override
+      public void run(WorkflowContext ctx) {
+        ctx.getInstanceId();
+      }
     }
-  }
 
   @Test
   public void getName() throws NoSuchMethodException {

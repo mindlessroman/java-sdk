@@ -63,7 +63,7 @@ This application uses `WorkflowRuntime.getInstance().registerWorkflow()` in orde
 
 Now, execute the following script in order to run DemoWorkflowService:
 ```sh
-dapr dapr run --app-id demoworkflowservice --dapr-grpc-port 4001
+dapr run --app-id demoworkflowservice --dapr-grpc-port 4001
 
 java -jar target/dapr-java-sdk-examples-exec.jar io.dapr.examples.actors.DemoWorkflowService
 ```
