@@ -22,8 +22,18 @@ public class DaprWorkflowContextImpl implements WorkflowContext {
 
   private final TaskOrchestrationContext innerContext;
 
-  public DaprWorkflowContextImpl(TaskOrchestrationContext context) {
-    this.innerContext = context;
+  /**
+   * Constructor for DaprWorkflowContextImpl.
+   *
+   * @param context TaskOrchestrationContext
+   * @throws IllegalArgumentException if context is null
+   */
+  public DaprWorkflowContextImpl(TaskOrchestrationContext context) throws IllegalArgumentException {
+    if (context == null) {
+      throw new IllegalArgumentException("Inner context cannot be null");
+    } else {
+      this.innerContext = context;
+    }
   }
 
   public String getName() {
