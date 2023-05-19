@@ -42,21 +42,5 @@ public class DemoWorkflowService {
     WorkflowRuntime.getInstance().registerWorkflow(DemoWorkflow.class);
     WorkflowRuntime.getInstance().start();
     System.out.println("Start workflow runtime");
-
-    final DurableTaskClient client = new DurableTaskGrpcClientBuilder().build();
-
-    TimeUnit.SECONDS.sleep(2);
-    String name = DemoWorkflow.class.getCanonicalName();
-    NewOrchestrationInstanceOptions options = new NewOrchestrationInstanceOptions();
-    // TODO: figure out why this causes a seg violation within dapr runtime
-    String instanceId = client.scheduleNewOrchestrationInstance(name);
-    // String instanceId = client.scheduleNewOrchestrationInstance(name, options);
-    System.out.printf("Started new orchestration instance: %s%n", instanceId);
-
-    TimeUnit.SECONDS.sleep(10);
-
-    WorkflowRuntime.getInstance().close();
-    System.out.println("Done");
-    System.exit(0);
   }
 }
