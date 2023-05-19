@@ -18,13 +18,15 @@ import io.dapr.workflows.runtime.WorkflowContext;
 /**
  * Common interface for workflow implementations.
  */
-@FunctionalInterface
-public interface Workflow {
+public abstract class Workflow {
+  public Workflow(){
+  }
+
   /**
    * Executes the workflow logic.
    *
    * @param ctx provides access to methods for scheduling durable tasks and getting information about the current
    *            workflow instance.
    */
-  void run(WorkflowContext ctx);
+  public abstract void run(WorkflowContext ctx);
 }
