@@ -23,7 +23,7 @@ public class DaprWorkflowClient {
    * Constructor for DaprWorkflowClient.
    *
    * @param innerClient DurableTaskClient instance
-   * @throws IllegalArgumentException catches the nulls
+   * @throws IllegalArgumentException if innerClient is null
    */
   public DaprWorkflowClient(DurableTaskClient innerClient) throws IllegalArgumentException {
     if (innerClient == null) {
