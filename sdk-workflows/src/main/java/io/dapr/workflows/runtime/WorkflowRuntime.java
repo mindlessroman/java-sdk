@@ -15,8 +15,6 @@ package io.dapr.workflows.runtime;
 
 import com.microsoft.durabletask.DurableTaskGrpcWorker;
 import com.microsoft.durabletask.DurableTaskGrpcWorkerBuilder;
-import com.microsoft.durabletask.TaskOrchestration;
-import com.microsoft.durabletask.TaskOrchestrationFactory;
 
 /**
  * Contains methods to register workflows and activities.
@@ -25,18 +23,15 @@ public class WorkflowRuntime implements AutoCloseable {
 
   private static volatile WorkflowRuntime instance;
   private DurableTaskGrpcWorkerBuilder builder;
-  private DurableTaskGrpcWorker client;
+  private DurableTaskGrpcWorker worker;
 
-  private WorkflowRuntime(DurableTaskGrpcWorkerBuilder builder) throws IllegalStateException {
+  private WorkflowRuntime() throws IllegalStateException {
 
     if (instance != null) {
       throw new IllegalStateException("WorkflowRuntime should only be constructed once");
     }
 
-    if (builder == null) {
-      builder = new DurableTaskGrpcWorkerBuilder();
-    }
-    this.builder = builder;
+    this.builder = new DurableTaskGrpcWorkerBuilder();
   }
 
   /**
@@ -48,7 +43,7 @@ public class WorkflowRuntime implements AutoCloseable {
     if (instance == null) {
       synchronized (WorkflowRuntime.class) {
         if (instance == null) {
-          instance = new WorkflowRuntime(null);
+          instance = new WorkflowRuntime();
         }
       }
     }
@@ -73,12 +68,10 @@ public class WorkflowRuntime implements AutoCloseable {
 
   /**
    * Start the Workflow runtime.
-   *
-   * @param port to be opened
    */
-  public void start(int port) {
-    this.client = this.builder.port(port).build();
-    this.client.start();
+  public void start() {
+    this.worker = this.builder.build();
+    this.worker.start();
   }
 
   /**
@@ -86,8 +79,8 @@ public class WorkflowRuntime implements AutoCloseable {
    */
   @Override
   public void close() {
-    if (this.client != null) {
-      this.client.close();
+    if (this.worker != null) {
+      this.worker.close();
     }
   }
 }

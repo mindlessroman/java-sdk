@@ -39,17 +39,13 @@ class OrchestratorWrapper<T extends Workflow> implements TaskOrchestrationFactor
   @Override
   public TaskOrchestration create() {
     return ctx -> {
-      System.out.println("Running!");
-      ctx.complete(null);
+      try {
+        T workflow = this.workflowConstructor.newInstance();
+        workflow.run(new DaprWorkflowContextImpl(ctx));
+      } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+        throw new RuntimeException(e);
+      }
     };
-//    return ctx -> {
-//      try {
-//        T workflow = this.workflowConstructor.newInstance();
-//        workflow.run(new DaprWorkflowContextImpl(ctx));
-//      } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-//        throw new RuntimeException(e);
-//      }
-//    };
 
   }
 }

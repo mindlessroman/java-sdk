@@ -21,7 +21,8 @@ import java.time.Duration;
 /**
  * Implementation of the DemoWorkflow for the server side.
  */
-public class DemoWorkflow implements Workflow {
+public class DemoWorkflow extends Workflow {
+
   @Override
   public void run(WorkflowContext ctx) {
     ctx.waitForExternalEventAsync("myEvent", Duration.ofSeconds(600));
