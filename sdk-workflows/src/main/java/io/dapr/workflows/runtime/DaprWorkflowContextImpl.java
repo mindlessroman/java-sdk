@@ -26,7 +26,7 @@ public class DaprWorkflowContextImpl implements WorkflowContext {
    * Constructor for DaprWorkflowContextImpl.
    *
    * @param context TaskOrchestrationContext
-   * @throws IllegalArgumentException cannot be null
+   * @throws IllegalArgumentException if context is null
    */
   public DaprWorkflowContextImpl(TaskOrchestrationContext context) throws IllegalArgumentException {
     if (context == null) {
