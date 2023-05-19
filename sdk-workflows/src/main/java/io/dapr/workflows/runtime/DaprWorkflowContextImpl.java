@@ -30,7 +30,7 @@ public class DaprWorkflowContextImpl implements WorkflowContext {
    */
   public DaprWorkflowContextImpl(TaskOrchestrationContext context) throws IllegalArgumentException {
     if (context == null) {
-      throw new IllegalArgumentException("Inner context cannot be null"); //TODO: Different exception? Different message?
+      throw new IllegalArgumentException("Inner context cannot be null");
     } else {
       this.innerContext = context;
     }
