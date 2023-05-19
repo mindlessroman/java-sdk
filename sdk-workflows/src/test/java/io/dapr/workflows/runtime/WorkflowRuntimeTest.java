@@ -26,18 +26,13 @@ public class WorkflowRuntimeTest {
   private static Constructor<WorkflowRuntime> constructor;
   private DurableTaskGrpcWorkerBuilder mockWorkerBuilder;
 
-  public static class TestWorkflow implements Workflow{
-
-    public TestWorkflow(){}
-
+  public static class TestWorkflow extends Workflow{
     @Override
-    public void run(WorkflowContext ctx) {
-
-    }
+    public void run(WorkflowContext ctx) { }
   }
 
   @Test
-  public void registerWorkflowClass() {
+  public void registerValidWorkflowClass() {
     assertDoesNotThrow(() -> WorkflowRuntime.getInstance().registerWorkflow(TestWorkflow.class));
   }
 
@@ -45,6 +40,13 @@ public class WorkflowRuntimeTest {
   public void startAndClose() {
     assertDoesNotThrow(() -> {
       WorkflowRuntime.getInstance().start();
+      WorkflowRuntime.getInstance().close();
+    });
+  }
+
+  @Test
+  public void closeWithoutStarting() {
+    assertDoesNotThrow(() -> {
       WorkflowRuntime.getInstance().close();
     });
   }
