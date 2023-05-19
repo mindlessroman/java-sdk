@@ -27,7 +27,6 @@ public class DaprWorkflowContextImplTest {
     context = new DaprWorkflowContextImpl(mockedInnerContext);
   }
 
-
   @Test
   public void getNameTest() {
     Assert.assertNotNull(context.getName());
@@ -38,9 +37,14 @@ public class DaprWorkflowContextImplTest {
     Assert.assertNotNull(context.getInstanceId());
   }
 
-    @Test
-    public void waitForExternalEventAsyncTest() {
-      Assert.assertNotNull(
-          context.waitForExternalEventAsync("TestEvent", Duration.ofSeconds(1)));
-    }
+  @Test
+  public void waitForExternalEventAsyncTest() {
+    Assert.assertNotNull(
+        context.waitForExternalEventAsync("TestEvent", Duration.ofSeconds(1)));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void DaprWorkflowContextWithEmptyInnerContext() {
+    context = new DaprWorkflowContextImpl(null);
+  }
 }
