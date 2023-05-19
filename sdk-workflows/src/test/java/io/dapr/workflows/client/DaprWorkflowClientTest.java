@@ -11,17 +11,23 @@ import static org.mockito.Mockito.when;
 
 public class DaprWorkflowClientTest {
   private DaprWorkflowClient client;
+  private String expectedScheduledNewInstanceId;
 
   @Before
   public void setUp() throws Exception {
+    expectedScheduledNewInstanceId = "TestWorkflowInstanceId";
     DurableTaskClient innerClient = mock(DurableTaskClient.class);
-    when(innerClient.scheduleNewOrchestrationInstance(any())).thenReturn("TestWorkflowInstanceId");
+    when(innerClient.scheduleNewOrchestrationInstance(any())).thenReturn(expectedScheduledNewInstanceId);
+
     client = new DaprWorkflowClient(innerClient);
   }
 
   @Test
   public void scheduleNewWorkflow() {
+
+    Assert.assertEquals(expectedScheduledNewInstanceId, client.scheduleNewWorkflow("TestWorkflow"));
     Assert.assertNotNull(client.scheduleNewWorkflow("TestWorkflow"));
+
   }
 
   @Test(expected = IllegalArgumentException.class)
