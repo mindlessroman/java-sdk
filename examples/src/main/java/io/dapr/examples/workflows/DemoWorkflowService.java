@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  * mvn clean install
  * 2. cd to [repo-root]/examples
  * 3. Run the server:
- * dapr run --app-id demoworkflowservice --dapr-grpc-port 4001
+ * dapr run --components-path ./components/actors --app-id demoworkflowservice --dapr-grpc-port 4001
  * java -jar target/dapr-java-sdk-examples-exec.jar io.dapr.examples.workflows.DemoWorkflowService
  */
 public class DemoWorkflowService {

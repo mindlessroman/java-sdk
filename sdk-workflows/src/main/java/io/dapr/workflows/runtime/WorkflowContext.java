@@ -27,5 +27,7 @@ public interface WorkflowContext {
 
   String getInstanceId();
 
+  void complete(Object o);
+
   Task waitForExternalEventAsync(String eventName, Duration timeout);
 }

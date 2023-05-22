@@ -51,9 +51,13 @@ public class DemoWorkflowClient {
       String instanceId = client.scheduleNewOrchestrationInstance(name);
       System.out.printf("Started new orchestration instance: %s%n", instanceId);
 
+      TimeUnit.SECONDS.sleep(5);
+
+      client.raiseEvent(instanceId, "myEvent");
+
       OrchestrationMetadata completedInstance = client.waitForInstanceCompletion(
           instanceId,
-          Duration.ofSeconds(30),
+          Duration.ofSeconds(5),
           false);
 
       System.out.printf("Orchestration completed: %s%n", completedInstance);
