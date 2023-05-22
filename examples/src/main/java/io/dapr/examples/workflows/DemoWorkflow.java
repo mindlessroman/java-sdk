@@ -13,6 +13,7 @@ limitations under the License.
 
 package io.dapr.examples.workflows;
 
+import com.microsoft.durabletask.TaskCanceledException;
 import io.dapr.workflows.runtime.Workflow;
 import io.dapr.workflows.runtime.WorkflowContext;
 
@@ -25,7 +26,14 @@ public class DemoWorkflow extends Workflow {
 
   @Override
   public void run(WorkflowContext ctx) {
-    ctx.waitForExternalEventAsync("myEvent", Duration.ofSeconds(600));
-    ctx.getName();
+    System.out.println("Hi, my name is " + ctx.getName());
+    System.out.println("Waiting for event: 'myEvent'...");
+    try {
+      ctx.waitForExternalEventAsync("myEvent", Duration.ofSeconds(30)).await();
+      System.out.println("Received!");
+    } catch (TaskCanceledException e) {
+      System.out.println("Timed out");
+    }
+    ctx.complete("finished");
   }
 }
