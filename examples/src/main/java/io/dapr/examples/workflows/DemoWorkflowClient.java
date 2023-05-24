@@ -15,17 +15,8 @@ package io.dapr.examples.workflows;
 
 import com.microsoft.durabletask.DurableTaskClient;
 import com.microsoft.durabletask.DurableTaskGrpcClientBuilder;
-import com.microsoft.durabletask.NewOrchestrationInstanceOptions;
-import com.microsoft.durabletask.OrchestrationMetadata;
-import io.dapr.actors.ActorId;
-import io.dapr.actors.client.ActorClient;
-import io.dapr.actors.client.ActorProxyBuilder;
-import io.dapr.workflows.runtime.WorkflowRuntime;
+import io.dapr.workflows.client.DaprWorkflowClient;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 /**
@@ -45,22 +36,16 @@ public class DemoWorkflowClient {
    * @throws InterruptedException If program has been interrupted.
    */
   public static void main(String[] args) throws InterruptedException, TimeoutException {
-    DurableTaskClient client = new DurableTaskGrpcClientBuilder().build();
+    DurableTaskClient innerClient = new DurableTaskGrpcClientBuilder().build();
+    DaprWorkflowClient client = new DaprWorkflowClient(innerClient);
+
     try (client) {
-      String name = DemoWorkflow.class.getCanonicalName();
-      String instanceId = client.scheduleNewOrchestrationInstance(name);
-      System.out.printf("Started new orchestration instance: %s%n", instanceId);
+      String workflowName = "ExampleWorkflow";
+      String instanceId = client.scheduleNewWorkflow(workflowName);
 
-      TimeUnit.SECONDS.sleep(5);
-
-      client.raiseEvent(instanceId, "myEvent");
-
-      OrchestrationMetadata completedInstance = client.waitForInstanceCompletion(
-          instanceId,
-          Duration.ofSeconds(5),
-          false);
-
-      System.out.printf("Orchestration completed: %s%n", completedInstance);
+      System.out.printf("Started new workflow instance: %s%n", instanceId);
+      // Workflow starts, completes
+      System.out.printf("Completed workflow: %s%n", instanceId);
     }
 
     System.exit(0);

@@ -14,8 +14,9 @@ limitations under the License.
 package io.dapr.workflows.client;
 
 import com.microsoft.durabletask.DurableTaskClient;
+import com.microsoft.durabletask.OrchestrationMetadata;
 
-public class DaprWorkflowClient {
+public class DaprWorkflowClient implements AutoCloseable {
 
   private DurableTaskClient innerClient;
 
@@ -41,5 +42,31 @@ public class DaprWorkflowClient {
    */
   public String scheduleNewWorkflow(String workflowName) {
     return this.innerClient.scheduleNewOrchestrationInstance(workflowName);
+  }
+
+  //TODO: Overloaded scheduleNewWorkflow implementations
+
+  public OrchestrationMetadata getWorkflowMetadata(String workflowName) {
+    return this.innerClient.getInstanceMetadata(workflowName, false); //TODO: is false what we want?
+  }
+
+  /**
+   * Terminates the workflow associated with the provided instance id.
+   *
+   * @param workflowName name of workflow to terminate
+   */
+  public void terminateWorkflow(String workflowName) {
+    this.innerClient.terminate(workflowName, null); //TODO: should this be null here?
+  }
+
+  /**
+   * Closes the inner DurableTask client.
+   *
+   */
+  public void close() {
+    if (this.innerClient != null) { //TODO: is there another condition worth checking?
+      this.innerClient.close();
+    }
+
   }
 }
