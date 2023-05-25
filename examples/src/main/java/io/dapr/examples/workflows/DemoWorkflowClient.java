@@ -36,18 +36,24 @@ public class DemoWorkflowClient {
    * @throws InterruptedException If program has been interrupted.
    */
   public static void main(String[] args) throws InterruptedException, TimeoutException {
-    DurableTaskClient innerClient = new DurableTaskGrpcClientBuilder().build();
-    DaprWorkflowClient client = new DaprWorkflowClient(innerClient);
+    DaprWorkflowClient client = new DaprWorkflowClient();
 
     try (client) {
-      String workflowName = "ExampleWorkflow";
+      String workflowName = DemoWorkflow.class.getCanonicalName();
       String instanceId = client.scheduleNewWorkflow(workflowName);
 
       System.out.printf("Started new workflow instance: %s%n", instanceId);
-      // Workflow starts, completes
-      System.out.printf("Completed workflow: %s%n", instanceId);
+
+      // EXAMPLE OF OTHER METHOD CALLS
+      // TimeUnit.SECOND.sleep(5);
+      // client.raiseEvent("myEvent", instanceId);
+      //
+      // String instanceToTerminateId = client.scheduleNewWorkflow(workflowName);
+      // client.terminate(instanceToTerminateId);
+
     }
 
+    System.out.println("Exiting DemoWorkflowClient.");
     System.exit(0);
   }
 }
