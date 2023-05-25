@@ -1,40 +1,56 @@
 package io.dapr.workflows.client;
 
-import org.junit.Assert;
+import com.microsoft.durabletask.DurableTaskClient;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
-import static org.mockito.ArgumentMatchers.any;
+import java.lang.reflect.Constructor;
+import java.util.Arrays;
+
 import static org.mockito.Mockito.*;
 
 public class DaprWorkflowClientTest {
   private DaprWorkflowClient client;
-  private String expectedScheduledNewInstanceId;
+
+  private static Constructor<DaprWorkflowClient> constructor;
+  private DurableTaskClient mockInnerClient;
+
+  @BeforeClass
+  public static void beforeAll() {
+        constructor =
+        Constructor.class.cast(Arrays.stream(DaprWorkflowClient.class.getDeclaredConstructors())
+            .filter(c -> c.getParameters().length == 1).map(c -> {
+              c.setAccessible(true);
+              return c;
+            }).findFirst().get());
+  }
 
   @Before
   public void setUp() throws Exception {
-    expectedScheduledNewInstanceId = "TestWorkflowInstanceId";
-    client = mock(DaprWorkflowClient.class);
-    when(client.scheduleNewWorkflow(any(String.class))).thenReturn(expectedScheduledNewInstanceId);
+    mockInnerClient = mock(DurableTaskClient.class);
+    client = constructor.newInstance(mockInnerClient);
   }
 
   @Test
   public void scheduleNewWorkflow() {
+    String expectedArgument = "TestWorkflow";
 
-    Assert.assertEquals(expectedScheduledNewInstanceId, client.scheduleNewWorkflow("TestWorkflow"));
-    Assert.assertNotNull(client.scheduleNewWorkflow("TestWorkflow"));
-
+    client.scheduleNewWorkflow(expectedArgument);
+    verify(mockInnerClient, times(1)).scheduleNewOrchestrationInstance(expectedArgument);
   }
 
   @Test
   public void terminateWorkflow() {
-    client.terminateWorkflow("TestWorkflow", null);
-    verify(client, times(1)).terminateWorkflow("TestWorkflow", null);
+    String expectedArgument = "TestWorkflow";
+
+    client.terminateWorkflow(expectedArgument, null);
+    verify(mockInnerClient, times(1)).terminate(expectedArgument, null);
   }
 
   @Test
   public void close() {
     client.close();
-    verify(client, times(1)).close();
+    verify(mockInnerClient, times(1)).close();
   }
 }

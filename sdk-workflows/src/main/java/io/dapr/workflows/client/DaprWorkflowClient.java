@@ -15,6 +15,9 @@ package io.dapr.workflows.client;
 
 import com.microsoft.durabletask.DurableTaskClient;
 import com.microsoft.durabletask.DurableTaskGrpcClientBuilder;
+import io.dapr.config.Properties;
+import io.dapr.utils.Version;
+import io.grpc.ManagedChannelBuilder;
 
 import javax.annotation.Nullable;
 
@@ -23,10 +26,25 @@ public class DaprWorkflowClient implements AutoCloseable {
   private DurableTaskClient innerClient;
 
   /**
-   * Constructor for DaprWorkflowClient.
+   * Public constructor for DaprWorkflowClient.
    */
   public DaprWorkflowClient() throws IllegalArgumentException {
-    DurableTaskClient innerClient = new DurableTaskGrpcClientBuilder().build();
+    this(new DurableTaskGrpcClientBuilder()
+        .grpcChannel(
+            ManagedChannelBuilder.forAddress(Properties.SIDECAR_IP.get(),
+                                             Properties.GRPC_PORT.get())
+                .usePlaintext()
+                .userAgent(Version.getSdkVersion())
+                .build())
+        .build());
+  }
+
+  /**
+   * Private Constructor for DaprWorkflowClient.
+   *
+   * @param innerClient DurableTaskGrpcClient with gprc Channel set up.
+   */
+  private DaprWorkflowClient(DurableTaskClient innerClient) {
     this.innerClient = innerClient;
   }
 
@@ -58,6 +76,5 @@ public class DaprWorkflowClient implements AutoCloseable {
     if (this.innerClient != null) {
       this.innerClient.close();
     }
-
   }
 }

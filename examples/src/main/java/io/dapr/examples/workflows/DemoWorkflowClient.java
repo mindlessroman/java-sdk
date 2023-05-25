@@ -13,10 +13,7 @@ limitations under the License.
 
 package io.dapr.examples.workflows;
 
-import com.microsoft.durabletask.DurableTaskClient;
-import com.microsoft.durabletask.DurableTaskGrpcClientBuilder;
 import io.dapr.workflows.client.DaprWorkflowClient;
-
 import java.util.concurrent.TimeoutException;
 
 /**
