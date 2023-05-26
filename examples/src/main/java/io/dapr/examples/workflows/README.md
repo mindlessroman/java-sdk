@@ -2,18 +2,18 @@
 
 In this example, we'll use Dapr to test workflow features.
 
-Visit [this](https://docs.dapr.io/developing-applications/building-blocks/actors/) link for more information about the Actor pattern.
+Visit [the Workflow documentation landing page](https://docs.dapr.io/developing-applications/building-blocks/workflow) link for more information.
 
 This example contains the follow classes:
 
-* DemoWorkflow: The interface for the actor. Exposes the different actor features.
-* DemoActorImpl: The implementation for the DemoActor interface. Handles the logic behind the different actor features.
-* DemoWorkflowService: A Spring Boot application service that registers the actor into the Dapr actor runtime.
-* DemoWorkflowClient: This class will create and execute actors and its capabilities by using Dapr.
+* DemoWorkflow: An example of a Dapr Workflow.
+* DemoWorkflowClient: This class will create and execute workflows and its capabilities by using Dapr.
+* DemoWorkflowService: A Spring Boot application service that registers the workflow into the Dapr workflow runtime.
  
 ## Pre-requisites
 
 * [Dapr and Dapr Cli](https://docs.dapr.io/getting-started/install-dapr/).
+  * Run `dapr init`.
 * Java JDK 11 (or greater):
     * [Microsoft JDK 11](https://docs.microsoft.com/en-us/java/openjdk/download#openjdk-11)
     * [Oracle JDK 11](https://www.oracle.com/technetwork/java/javase/downloads/index.html#JDK11)
@@ -36,17 +36,17 @@ Then build the Maven project:
 mvn install
 ```
 
-Get into the examples directory.
+Get into the `examples` directory.
 ```sh
 cd examples
 ```
 
-### Running the Demo workflow service
+### Running the demo Workflow service
 
-The first Java class is `DemoWorkflowService`. Its job is to register an implementation of `DemoWorkflow` in the Dapr's workflow runtime engine. In `DemoWorkflowService.java` file, you will find the `DemoWorkflowService` class and the `main` method. See the code snippet below:
+The first Java class to consider is `DemoWorkflowService`. Its job is to register an implementation of `DemoWorkflow` in the Dapr's workflow runtime engine. In `DemoWorkflowService.java` file, you will find the `DemoWorkflowService` class and the `main` method. See the code snippet below:
 
 ```java
-public class DemoActorService {
+public class DemoWorkflowService {
 
   public static void main(String[] args) throws Exception {
     // Register the Workflow with the runtime.
@@ -57,27 +57,20 @@ public class DemoActorService {
 ```
 
 This application uses `WorkflowRuntime.getInstance().registerWorkflow()` in order to register `DemoWorkflow` as a Workflow in the Dapr Workflow runtime.
- 
 
 `WorkflowRuntime.getInstance().start()` method will build and start the engine within the Dapr workflow runtime.
 
 Now, execute the following script in order to run DemoWorkflowService:
 ```sh
-dapr run --app-id demoworkflowservice --dapr-grpc-port 4001
-
-java -jar target/dapr-java-sdk-examples-exec.jar io.dapr.examples.actors.DemoWorkflowService
+dapr run --app-id demoworkflowservice --resources-path ./components/workflows --dapr-grpc-port 4001 -- java -jar target/dapr-java-sdk-examples-exec.jar io.dapr.examples.workflows.DemoWorkflowService
 ```
 
 ### Running the Workflow client
 
-> TODO
+The `DemoWorkflowClient` starts instances of workflows that have been registered with Dapr.
 
-Use the follow command to execute the DemoWorkflowClient:
+With the DemoWorkflowService running, use the follow command to start the workflow with the DemoWorkflowClient:
 
 ```sh
-dapr run ...
+dapr run --app-id demoworkflowclient --resources-path ./components/workflows --dapr-grpc-port 4001 -- java -jar target/dapr-java-sdk-examples-exec.jar io.dapr.examples.workflows.DemoWorkflowClient
 ```
-
-### Limitations
-
-> TODO

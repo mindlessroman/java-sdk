@@ -1,50 +1,52 @@
 package io.dapr.workflows.runtime;
 
-import com.microsoft.durabletask.Task;
 import com.microsoft.durabletask.TaskOrchestrationContext;
 import org.junit.Test;
-import org.junit.Assert;
 import org.junit.Before;
 
 import java.time.Duration;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class DaprWorkflowContextImplTest {
   private DaprWorkflowContextImpl context;
+  private TaskOrchestrationContext mockInnerContext;
 
   @Before
   public void setUp() {
-    TaskOrchestrationContext mockedInnerContext = mock(TaskOrchestrationContext.class);
-    Task<Void> mockedExternalTask = mock(Task.class);
-
-    when(mockedInnerContext.getInstanceId()).thenReturn("TestInstance");
-    when(mockedInnerContext.getName()).thenReturn("TestName");
-    when(mockedInnerContext.waitForExternalEvent(any(), any(Duration.class))).thenReturn(mockedExternalTask);
-
-    context = new DaprWorkflowContextImpl(mockedInnerContext);
+    mockInnerContext = mock(TaskOrchestrationContext.class);
+    context = new DaprWorkflowContextImpl(mockInnerContext);
   }
 
   @Test
   public void getNameTest() {
-    Assert.assertNotNull(context.getName());
+    context.getName();
+    verify(mockInnerContext, times(1)).getName();
   }
 
   @Test
   public void getInstanceIdTest() {
-    Assert.assertNotNull(context.getInstanceId());
+    context.getInstanceId();
+    verify(mockInnerContext, times(1)).getInstanceId();
   }
 
   @Test
-  public void waitForExternalEventAsyncTest() {
-    Assert.assertNotNull(
-        context.waitForExternalEventAsync("TestEvent", Duration.ofSeconds(1)));
+  public void waitForExternalEventTest() {
+    String expectedEvent = "TestEvent";
+    Duration expectedDuration = Duration.ofSeconds(1);
+
+    context.waitForExternalEvent(expectedEvent, expectedDuration);
+    verify(mockInnerContext, times(1)).waitForExternalEvent(expectedEvent, expectedDuration);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void DaprWorkflowContextWithEmptyInnerContext() {
     context = new DaprWorkflowContextImpl(null);
+  }
+
+  @Test
+  public void completeTest() {
+    context.complete(null);
+    verify(mockInnerContext, times(1)).complete(null);
   }
 }
