@@ -2,13 +2,13 @@
 
 In this example, we'll use Dapr to test workflow features.
 
-Visit [the Workflow documentation landing page](https://docs.dapr.io/developing-applications/building-blocks/workflow) link for more information.
+Visit [the Workflow documentation landing page](https://docs.dapr.io/developing-applications/building-blocks/workflow) for more information.
 
 This example contains the follow classes:
 
 * DemoWorkflow: An example of a Dapr Workflow.
-* DemoWorkflowClient: This class will create and execute workflows and its capabilities by using Dapr.
-* DemoWorkflowService: A Spring Boot application service that registers the workflow into the Dapr workflow runtime.
+* DemoWorkflowClient: This application will start workflows using Dapr.
+* DemoWorkflowService: An application that registers a workflow to the Dapr workflow runtime engine. It also executes the workflow instance.
  
 ## Pre-requisites
 
