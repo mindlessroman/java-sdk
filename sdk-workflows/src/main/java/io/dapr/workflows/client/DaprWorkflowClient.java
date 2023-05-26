@@ -17,6 +17,7 @@ import com.microsoft.durabletask.DurableTaskClient;
 import com.microsoft.durabletask.DurableTaskGrpcClientBuilder;
 import io.dapr.config.Properties;
 import io.dapr.utils.Version;
+import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
 import javax.annotation.Nullable;
@@ -24,19 +25,17 @@ import javax.annotation.Nullable;
 public class DaprWorkflowClient implements AutoCloseable {
 
   private DurableTaskClient innerClient;
+  private ManagedChannel grpcInnerChannel;
 
   /**
    * Public constructor for DaprWorkflowClient.
    */
-  public DaprWorkflowClient() throws IllegalArgumentException {
-    this(new DurableTaskGrpcClientBuilder()
-        .grpcChannel(
-            ManagedChannelBuilder.forAddress(Properties.SIDECAR_IP.get(),
-                                             Properties.GRPC_PORT.get())
-                .usePlaintext()
-                .userAgent(Version.getSdkVersion())
-                .build())
-        .build());
+  public DaprWorkflowClient() {
+    this(setGrpcChannel());
+  }
+
+  private DaprWorkflowClient(ManagedChannel grpcChannel) {
+    this(createDurableTaskClient(grpcChannel), grpcChannel);
   }
 
   /**
@@ -44,8 +43,28 @@ public class DaprWorkflowClient implements AutoCloseable {
    *
    * @param innerClient DurableTaskGrpcClient with gprc Channel set up.
    */
-  private DaprWorkflowClient(DurableTaskClient innerClient) {
+  private DaprWorkflowClient(DurableTaskClient innerClient, ManagedChannel grpcChannel) {
     this.innerClient = innerClient;
+    this.grpcInnerChannel = grpcChannel;
+  }
+
+  private static DurableTaskClient createDurableTaskClient(ManagedChannel grpcChannel) {
+    return new DurableTaskGrpcClientBuilder()
+        .grpcChannel(grpcChannel)
+        .build();
+  }
+
+  private static ManagedChannel setGrpcChannel() throws IllegalStateException {
+    int port = Properties.GRPC_PORT.get();
+    if (port <= 0) {
+      throw new IllegalStateException("Invalid port.");
+    }
+
+    ManagedChannel channel =  ManagedChannelBuilder.forAddress(Properties.SIDECAR_IP.get(), port)
+        .usePlaintext()
+        .userAgent(Version.getSdkVersion())
+        .build();
+    return channel;
   }
 
   /**
@@ -73,8 +92,9 @@ public class DaprWorkflowClient implements AutoCloseable {
    *
    */
   public void close() {
-    if (this.innerClient != null) {
+    if (this.innerClient != null && !this.grpcInnerChannel.isShutdown()) {
       this.innerClient.close();
+      this.grpcInnerChannel.shutdown();
     }
   }
 }
