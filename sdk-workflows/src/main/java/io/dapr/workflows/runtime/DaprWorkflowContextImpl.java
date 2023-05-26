@@ -49,7 +49,7 @@ public class DaprWorkflowContextImpl implements WorkflowContext {
   }
 
   @Override
-  public Task<Void> waitForExternalEventAsync(String eventName, Duration timeout) {
+  public Task<Void> waitForExternalEvent(String eventName, Duration timeout) {
     return innerContext.waitForExternalEvent(eventName, timeout);
   }
 }

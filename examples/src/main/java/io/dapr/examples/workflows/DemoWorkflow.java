@@ -29,7 +29,7 @@ public class DemoWorkflow extends Workflow {
     System.out.println("Hi, my name is " + ctx.getName());
     System.out.println("Waiting for event: 'myEvent'...");
     try {
-      ctx.waitForExternalEventAsync("myEvent", Duration.ofSeconds(30)).await();
+      ctx.waitForExternalEvent("myEvent", Duration.ofSeconds(30)).await();
       System.out.println("Received!");
     } catch (TaskCanceledException e) {
       System.out.println("Timed out");
