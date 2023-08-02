@@ -20,6 +20,7 @@ import io.grpc.ManagedChannel;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import reactor.core.publisher.Mono;
 
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
@@ -35,7 +36,8 @@ public class DaprWorkflowClientTest {
 
   public class TestWorkflow extends Workflow {
     @Override
-    public void run(WorkflowContext ctx) {
+    public Mono<Void> run(WorkflowContext ctx) {
+      return Mono.empty().then();
     }
   }
 

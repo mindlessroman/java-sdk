@@ -14,17 +14,17 @@ limitations under the License.
 package io.dapr.workflows.runtime;
 
 
-import com.microsoft.durabletask.DurableTaskGrpcWorkerBuilder;
 import org.junit.Test;
-
-import java.lang.reflect.Constructor;
+import reactor.core.publisher.Mono;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class WorkflowRuntimeTest {
     public static class TestWorkflow extends Workflow {
       @Override
-      public void run(WorkflowContext ctx) { }
+      public Mono<Void> run(WorkflowContext ctx) {
+        return Mono.empty().then();
+      }
     }
 
   @Test
